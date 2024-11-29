@@ -7,25 +7,28 @@ import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import { sortPlacesByDistance } from './loc.js';
 
-const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [] ;
-const storedPlaces = storedIds.map((id) => AVAILABLE_PLACES.find((place) => place.id === id));
+const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+const storedPlaces = storedIds.map((id) =>
+  AVAILABLE_PLACES.find((place) => place.id === id)
+);
 
 function App() {
-
   const selectedPlace = useRef();
-  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
-  const [availablePlaces, setAvailablePlaces] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [availablePlaces, setAvailablePlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
-      const sortedPlaces = sortPlacesByDistance(AVAILABLE_PLACES, position.coords.latitude, position.coords.longitude)
+      const sortedPlaces = sortPlacesByDistance(
+        AVAILABLE_PLACES,
+        position.coords.latitude,
+        position.coords.longitude
+      );
 
       setAvailablePlaces(sortedPlaces);
     });
   }, []);
-
-
 
   function handleStartRemovePlace(id) {
     setModalIsOpen(true);
@@ -45,9 +48,12 @@ function App() {
       return [place, ...prevPickedPlaces];
     });
 
-    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [] ;
-    if(storedIds.indexOf(id) === -1) {
-      localStorage.setItem('selectedPlaces', JSON.stringify([id, ...storedIds]))
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    if (storedIds.indexOf(id) === -1) {
+      localStorage.setItem(
+        'selectedPlaces',
+        JSON.stringify([id, ...storedIds])
+      );
     }
   }
 
@@ -57,8 +63,11 @@ function App() {
     );
     setModalIsOpen(false);
 
-    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [] ;
-    localStorage.setItem('selectedPlaces', JSON.stringify([storedIds.filter((id) => id !== selectedPlace.current)]))
+    const storedIds = JSON.parse(localStorage.getItem('selectedPlaces')) || [];
+    localStorage.setItem(
+      'selectedPlaces',
+      JSON.stringify(storedIds.filter((id) => id !== selectedPlace.current))
+    );
   }, []);
 
   return (
@@ -79,7 +88,7 @@ function App() {
         </p>
       </header>
       <main>
-          <Places
+        <Places
           title="I'd like to visit ..."
           fallbackText={'Select the places you would like to visit below.'}
           places={pickedPlaces}
@@ -88,7 +97,7 @@ function App() {
         <Places
           title="Available Places"
           places={availablePlaces}
-          fallbackText="Sorting places by distance ..."
+          fallbackText="Sorting places by distance..."
           onSelectPlace={handleSelectPlace}
         />
       </main>
